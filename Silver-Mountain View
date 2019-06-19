@@ -1,0 +1,96 @@
+/*
+ID: jet0303
+LANG: JAVA
+TASK: Mountain View
+ */
+import java.io.*;
+import java.util.*;
+
+class bucketList {
+	public static void main (String [] args) throws IOException {
+	    BufferedReader f = new BufferedReader(new FileReader("mountains.in"));
+	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("mountains.out")));
+	    
+	    StringTokenizer st = new StringTokenizer(f.readLine());
+	    int totalMountains = Integer.parseInt(st.nextToken());
+	    ArrayList<int[]> arr = new ArrayList<int[]>();
+	    int temp1;
+	    int temp2;
+	    for(int x=0;x<totalMountains;x++)
+	    {
+	    	st = new StringTokenizer(f.readLine());
+	    	temp1=Integer.parseInt(st.nextToken());
+	    	temp2=Integer.parseInt(st.nextToken());
+	    	int[] arrTemp= new int[2];
+	    	arrTemp[0]=temp1;
+	    	arrTemp[1]=temp2;
+	    	arr.add(arrTemp);
+	    }
+	    arr.sort(new Comparator<int[]>() 
+        {
+
+            public int compare(int[] o1, int[] o2) 
+            {
+	            return o2[1]-o1[1];       
+
+                // it can also return 0, and 1
+            }
+           }    
+    );
+	    ArrayList<int[]> arr2 = new ArrayList<int[]>();
+	    arr2.add(arr.get(0));
+	    for(int x=1;x<arr.size();x++)
+	    {
+	    	int[] temp = arr.get(x);
+	    	boolean notCovered=false;
+	    	for(int[] biggests:arr2)
+	    	{
+	    		//System.out.println("test " +biggests[0]+ " "+biggests[1]+ " compare "+temp[0] + " " + temp[1]);
+	    		if(biggerThan(biggests[0],biggests[1],temp[0],temp[1]))
+	    		{
+	    			//System.out.println(biggests[0]+ " "+biggests[1]+ " compare "+temp[0] + " " + temp[1] + biggerThan(biggests[0],biggests[1],temp[0],temp[1]));
+	    			notCovered=true;
+	    		}
+	    	}
+	    	if(!notCovered)
+	    	{
+	    		//System.out.println(temp[0] + " " + temp[1]);
+	    		arr2.add(temp);
+	    	}
+	    }
+	    System.out.println();
+	    
+	    
+	    /*for(int[] x:arr)
+	    {
+	    	if(arr2.contains(x))
+	    	{
+	    		for(int y = arr2.indexOf(x)+1;y<arr2.size();y++)
+	    		{
+	    			int[] temp = arr2.get(y);
+	    			if(biggerThan(x[0],x[1],temp[0],temp[1])){
+	    				System.out.println(x[0]+ " "+x[1]+ " compare "+temp[0] + " " + temp[1] + biggerThan(x[0],x[1],temp[0],temp[1]));
+	    				arr2.remove(y);
+	    				y--;
+	    			}
+	    		}
+	    	}
+	    }*/
+	    //System.out.println(arr2.size());
+	    //out.println(arr2.size());
+	    System.out.println(arr2.size());
+	    out.print(arr2.size());
+	    out.close();                      
+	  }
+	public static boolean biggerThan(int x1, int y1, int x2, int y2)//if mountain1 is greater than mountain2
+	{
+		if(x1==x2)
+			return(y1>y2);
+		else if(x1<x2)
+			return ((y1-x2+x1)>=y2);
+		else if(x1>x2)
+			return((y1-x1+x2)>=y2);
+		
+		return false;
+	}
+}
