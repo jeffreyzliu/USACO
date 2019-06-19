@@ -1,0 +1,93 @@
+import java.io.*;
+import java.util.*;
+public class dishes
+{
+    public static void main(String[] args) throws IOException{
+        
+        BufferedReader f = new BufferedReader(new FileReader("cowland.in"));
+                                                  // input file name goes above
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("cowland.out")));
+        // Use StringTokenizer vs. readLine/split -- lots faster
+        StringTokenizer st = new StringTokenizer(f.readLine());
+                          // Get line, break into tokens 
+        int number = Integer.parseInt(st.nextToken());  
+        int numQuery = Integer.parseInt(st.nextToken());
+        int[] list = new int[number];
+        st = new StringTokenizer(f.readLine());
+        for(int x=0;x<number;x++)
+        {
+        	list[x]=Integer.parseInt(st.nextToken());
+        }
+        ArrayList<int[]> paths = new ArrayList<int[]>();
+        int[] temp9 = new int[2];
+        for(int x=0;x<number-1;x++)
+        {
+        	st = new StringTokenizer(f.readLine());
+        	temp9[0]=Integer.parseInt(st.nextToken());
+        	temp9[1]=Integer.parseInt(st.nextToken());
+        	paths.add(temp9);
+        }
+        ArrayList<int[]> queries = new ArrayList<int[]>();
+        int[] temp8 = new int[3];
+        for(int x=0;x<numQuery;x++)
+        {
+        	st = new StringTokenizer(f.readLine());
+        	temp8[0]=Integer.parseInt(st.nextToken());
+        	temp8[1]=Integer.parseInt(st.nextToken());
+        	temp8[2]=Integer.parseInt(st.nextToken());
+        	queries.add(temp8);
+        }
+        
+		
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+        for(int i = 0; i < list.length; i++) {
+        		map.put(i+1, new ArrayList<Integer>());
+        }
+        for(int i = 0; i < paths.size(); i++) {
+        		
+        		ArrayList<Integer> temp = map.get(paths.get(i)[0]);
+        		temp.add(paths.get(i)[1]);
+        		temp = map.get(paths.get(i)[1]);
+        		temp.add(paths.get(i)[0]);
+        }
+
+        for(int[] query: queries) {
+        		if(query[0] == 1) {
+        			list[query[1]-1] = query[2];
+        		}else {
+        			out.print(calculateEnjoyment(bfs(map, query[1], query[2]), list));
+        			out.println();
+        		}
+        }
+
+        out.close();
+        
+    }
+    public static int calculateEnjoyment(ArrayList<Integer> a, int[] list) {
+		int total = 0;
+		for(int i: a) {
+			total = total^list[i-1];
+		}
+		return total;
+	}
+	
+	public static ArrayList<Integer> bfs(HashMap<Integer, ArrayList<Integer>> map, int start, int end) {
+		Deque<ArrayList<Integer>> queue = new LinkedList<ArrayList<Integer>>();
+		ArrayList<Integer> temp = new ArrayList<>();
+		ArrayList<Integer> newpath;
+		temp.add(start);
+		queue.addLast(temp);
+		while(!queue.isEmpty()) {
+			temp = queue.pop();
+			if(end == temp.get(temp.size()-1)) {
+				return temp;
+			}
+			for(int i: map.get(temp.get(temp.size()-1))) {
+				newpath = new ArrayList<>(temp);
+				newpath.add(i);
+				queue.addLast(newpath);
+			}
+		}
+		return null;
+	}
+}
