@@ -1,0 +1,33 @@
+/* 
+PROBLEM URL: http://usaco.org/index.php?page=viewproblem2&cpid=894
+ID: jet0303
+LANG: JAVA
+TASK: Grass Planting
+*/
+import java.io.*;
+import java.util.*;
+
+class bucketList {
+  public static void main (String [] args) throws IOException {
+    BufferedReader f = new BufferedReader(new FileReader("planting.in"));
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("planting.out")));
+    
+    StringTokenizer st = new StringTokenizer(f.readLine());
+    int totalNodes = Integer.parseInt(st.nextToken());
+    int[] arr = new int[totalNodes+1];
+    for(int x=0;x<totalNodes-1;x++) {
+    	st = new StringTokenizer(f.readLine());
+    	arr[Integer.parseInt(st.nextToken())]+=1;
+    	arr[Integer.parseInt(st.nextToken())]+=1;
+    }
+    int temp=0;
+    for(int x=0;x<totalNodes;x++) {
+    	if(arr[x]>temp) {
+    		temp=arr[x];
+    	}
+    }
+    System.out.println(temp+1);
+    out.println((temp+1));
+    out.close();                      
+  }
+}
