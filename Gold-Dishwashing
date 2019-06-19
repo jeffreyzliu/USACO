@@ -1,0 +1,74 @@
+import java.io.*;
+import java.util.*;
+public class dishes
+{
+    public static void main(String[] args) throws IOException{
+        
+        BufferedReader f = new BufferedReader(new FileReader("dishes.in"));
+                                                  // input file name goes above
+        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("dishes.out")));
+        // Use StringTokenizer vs. readLine/split -- lots faster
+        StringTokenizer st = new StringTokenizer(f.readLine());
+                          // Get line, break into tokens 
+        int total = Integer.parseInt(st.nextToken());
+        ArrayList<Integer> dishes = new ArrayList<>();
+        for(int x=0;x<total;x++)
+        {
+        	st = new StringTokenizer(f.readLine());
+        	dishes.add(Integer.parseInt(st.nextToken()));
+        }
+        
+  	  ArrayList<ArrayList<Integer>> stacks = new ArrayList<>();
+  	  Stack<Integer> finishedPlates = new Stack<>();
+  	  for(int i = 0; i < dishes.size(); i++) {
+  		  if(!finishedPlates.isEmpty() && finishedPlates.peek() > dishes.get(i)) {
+  			  out.print(i);
+  			  System.out.print(i);
+  			  out.close();
+  			  return;
+  		  }
+  		  //if you can't add the dish that means you need to cull
+  		  if(!addDish(dishes.get(i), stacks)) {
+  			  finishedPlates.add(removeDish(stacks));
+  			  i--;
+  		  }
+  	  }
+  	  System.out.println(dishes.size());
+        
+        
+        
+        
+        out.print(dishes.size());
+        out.close();
+        
+    }
+    public static boolean addDish(int num, ArrayList<ArrayList<Integer>> stack) {
+  	  for(ArrayList<Integer> a: stack) {
+  		  if(a.get(a.size()-1) > num) {
+  			  a.add(num);
+  			  return true;
+  		  }
+  		  if(a.get(0) > num) {
+  			  return false;
+  		  }
+  	  }
+  	  ArrayList<Integer> temp = new ArrayList<Integer>();
+  	  temp.add(num);
+  	  stack.add(temp);
+  	  return true;
+    }
+    
+  //returns true if can add a dish to the soapy pile and no if not
+    public static int removeDish(ArrayList<ArrayList<Integer>> stack) {
+  	  if(stack.size()<1) {
+  		  return -1;
+  	  }
+  	  ArrayList<Integer> list = stack.get(0);
+  	  int i = list.remove(list.size()-1);
+  	  if(list.isEmpty()) {
+  		  stack.remove(0);
+  	  }
+  	  return i;
+  	  
+    }
+}
