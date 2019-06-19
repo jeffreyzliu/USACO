@@ -21,6 +21,7 @@ class bucketList {
     	arr[Integer.parseInt(st.nextToken())]+=1;
     }
     int temp=0;
+    //Unique solution to the problem is to find the node that has the most nodes connected to it and add 1
     for(int x=0;x<totalNodes;x++) {
     	if(arr[x]>temp) {
     		temp=arr[x];
