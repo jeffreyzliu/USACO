@@ -1,0 +1,104 @@
+/* 
+ID: jet0303
+LANG: JAVA
+TASK: Icy Perimeter
+ */
+import java.io.*;
+import java.util.*;
+
+class bucketList {
+	public static void main (String [] args) throws IOException {
+	    // Use BufferedReader rather than RandomAccessFile; it's much faster
+	    BufferedReader f = new BufferedReader(new FileReader("perimeter.in"));
+	                                                  // input file name goes above
+	    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("perimeter.out")));
+	    // Use StringTokenizer vs. readLine/split -- lots faster
+							  // Get line, break into tokens
+
+			StringTokenizer st = new StringTokenizer(f.readLine());
+			int totalIce = Integer.parseInt(st.nextToken());
+			int[][] grid1 = new int[totalIce][totalIce];
+			int[][] grid2 = new int[totalIce][totalIce];
+			for(int x=0;x<totalIce;x++)
+			{
+				st = new StringTokenizer(f.readLine());
+				String s = st.nextToken();
+				for(int y=0;y<totalIce;y++){
+					char z= s.charAt(y);
+					if(z == '#') {
+						grid1[x][y]=1;
+						grid2[x][y]=1;
+					}
+					else {
+						grid1[x][y]=0;
+						grid2[x][y]=0;
+					}
+				}
+			}
+			
+			int area = 0;
+			int perimeter = Integer.MAX_VALUE;
+			for(int x = 0; x < grid1.length; x++) {
+				
+				for(int y = 0; y < grid1[0].length;y++) {
+					int temp = calculateArea(grid1, x, y);
+					if(area == temp) {
+						perimeter = Math.min(perimeter, calculatePerimeter(grid2, x, y));
+					}
+					else if (area < temp) {
+						area = temp;
+						perimeter = calculatePerimeter(grid2, x, y);
+					}
+
+				}
+			}
+			
+			System.out.println(area + " " + perimeter);
+			out.print(area + " " + perimeter);
+			out.close();
+		}
+
+		public static int calculateArea(int[][] grid, int x, int y) {
+			if (!checkValid(grid, x, y)) {
+				return 0;
+			}
+			if (grid[x][y] == 1) {
+				grid[x][y] = 0;
+				return 1 + calculateArea(grid, x - 1, y) + calculateArea(grid, x + 1, y) + calculateArea(grid, x, y - 1)
+						+ calculateArea(grid, x, y + 1);
+			}
+			return 0;
+		}
+
+		public static int calculatePerimeter(int[][] grid, int x, int y) {
+			if (!checkValid(grid, x, y)) {
+				return 0;
+			}
+			if (grid[x][y] == 1) {
+				grid[x][y] = -1;
+				int currPerimeter = 0;
+				if (!checkValid(grid, x + 1, y) || (checkValid(grid, x + 1, y) && grid[x + 1][y] == 0)) {
+					currPerimeter++;
+				}
+				if (!checkValid(grid, x - 1, y) || checkValid(grid, x - 1, y) && grid[x - 1][y] == 0) {
+					currPerimeter++;
+				}
+				if (!checkValid(grid, x, y + 1) || checkValid(grid, x, y + 1) && grid[x][y + 1] == 0) {
+					currPerimeter++;
+				}
+				if (!checkValid(grid, x, y - 1) || checkValid(grid, x, y - 1) && grid[x][y - 1] == 0) {
+					currPerimeter++;
+				}
+				return currPerimeter + calculatePerimeter(grid, x + 1, y) + calculatePerimeter(grid, x - 1, y)
+						+ calculatePerimeter(grid, x, y + 1) + calculatePerimeter(grid, x, y - 1);
+			}
+			return 0;
+		}
+
+		public static boolean checkValid(int[][] grid, int x, int y) {
+			if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length) {
+				return false;
+			}
+			return true;
+		}
+}
